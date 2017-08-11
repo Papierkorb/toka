@@ -1,0 +1,10 @@
+name: toka
+version: 0.1.0
+description: A type-safe, object-oriented option parser using the mapping-pattern
+
+authors:
+  - Stefan Merettig <stefan-merettig@nuriaproject.org>
+
+crystal: 0.23.1
+
+license: MIT
