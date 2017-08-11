@@ -1,13 +1,13 @@
 require "./spec_helper"
 
-module MyConverter
+private module MyConverter
   def self.read(input) : Int32?
     v = input.to_i * 2
     v if v < 100 # Fail if *input* >= "50"
   end
 end
 
-module MyStringConverter
+private module MyStringConverter
   def self.read(input) : String?
     if input == "fail"
       nil
@@ -17,7 +17,7 @@ module MyStringConverter
   end
 end
 
-private class TestMapping
+private class TestConverterMapping
   Toka.mapping({
     foo: {
       type: Int32,
@@ -63,7 +63,7 @@ end
 
 describe "converter behaviour" do
   it "calls the converters" do
-    subject = TestMapping.new(%w[ --foo=4 --bar=foo ])
+    subject = TestConverterMapping.new(%w[ --foo=4 --bar=foo ])
     subject.foo.should eq 8
     subject.bar.should eq "foo"
   end
@@ -90,31 +90,31 @@ describe "converter behaviour" do
   describe "error handling" do
     it "raises for an error in value_converter" do
       expect_raises(Toka::ConversionError) do
-        TestMapping.new(%w[ --foo=4 --bar=fail ])
+        TestConverterMapping.new(%w[ --foo=4 --bar=fail ])
       end
     end
 
     it "raises for an error in value_converter on nilable field" do
       expect_raises(Toka::ConversionError) do
-        TestMapping.new(%w[ --foo=4 --bar=foo --nilable-bar=fail ])
+        TestConverterMapping.new(%w[ --foo=4 --bar=foo --nilable-bar=fail ])
       end
     end
 
     it "raises for an error in value_converter on sequential field" do
       expect_raises(Toka::ConversionError) do
-        TestMapping.new(%w[ --foo=4 --bar=foo --list=10000 ])
+        TestConverterMapping.new(%w[ --foo=4 --bar=foo --list=10000 ])
       end
     end
 
     it "raises for an error in value_converter on associative field" do
       expect_raises(Toka::ConversionError) do
-        TestMapping.new(%w[ --foo=4 --bar=foo --map yadda=10000 ])
+        TestConverterMapping.new(%w[ --foo=4 --bar=foo --map yadda=10000 ])
       end
     end
 
     it "raises for an error in key_converter on associative field" do
       expect_raises(Toka::ConversionError) do
-        TestMapping.new(%w[ --foo=4 --bar=foo --map fail=4 ])
+        TestConverterMapping.new(%w[ --foo=4 --bar=foo --map fail=4 ])
       end
     end
   end

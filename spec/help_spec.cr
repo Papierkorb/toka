@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-private class TestMapping
+private class HelpMapping
   Toka.mapping({
     name: {
       type: String,
@@ -35,7 +35,7 @@ end
 
 describe "--help feature" do
   it "stores all data" do
-    TestMapping.toka_options.should eq Toka::OptionDescriptor.new(
+    HelpMapping.toka_options.should eq Toka::OptionDescriptor.new(
       "This is my banner",
       "This is my footer",
       [
@@ -50,12 +50,15 @@ describe "--help feature" do
   end
 
   it "renders a pretty help page" do
-    renderer = Toka::HelpPageRenderer.new(TestMapping, colors: false)
+    renderer = Toka::HelpPageRenderer.new(HelpMapping, colors: false)
+
+    # The pipe symbol at `--toggle` isn't part of the actual output.
+    # It's there so that "smart" editors don't automatically break this test.
     renderer.to_s.should eq <<-EOF
 This is my banner
   -n, --name=NAME             This is a long
                               multiline description!
-  -t, --toggle                
+  -t, --toggle                |
   -1, --one=VALUE             I have a few custom aliases
   -h, --help                  Shows this help
 
@@ -65,6 +68,6 @@ Long options
   -o, --normal=VALUE          A normal one for once
 This is my footer
 
-EOF
+EOF.gsub("|", "")
   end
 end
