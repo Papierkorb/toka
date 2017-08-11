@@ -20,10 +20,10 @@ class MyOptions # Create a container class
   })
 end
 
-Now, create an instance:
+# Now, create an instance:
 opts = MyOptions.new # It will use `ARGV` by default!
 
-And access the fields.  Bool-type fields have an question-mark getter too!
+# And access the fields.  Bool-type fields have an question-mark getter too!
 puts "Hello, #{opts.name} #{opts.last_name}" if opts.verbose?
 ```
 
@@ -77,10 +77,10 @@ class MyOptions
   })
 end
 
-Now, create an instance:
+# Now, create an instance:
 opts = MyOptions.new # It will use `ARGV` by default!
 
-And access the fields.  Bool-type fields have an question-mark getter too!
+# And access the fields.  Bool-type fields have an question-mark getter too!
 puts "Hello, #{opts.name} #{opts.last_name}" if opts.verbose?
 ```
 
