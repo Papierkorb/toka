@@ -428,7 +428,7 @@ module Toka
         index: opt_index,
         long_names: long,
         short_names: short,
-        all_short_names: ([ ] of String + short),
+        all_short_names: ([ ] of String + (short || [ ] of String)),
         value_name: value_name,
         description: v[:description],
         category: v[:category],
