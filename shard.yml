@@ -1,5 +1,5 @@
 name: toka
-version: 0.1.0
+version: 0.1.1
 description: A type-safe, object-oriented option parser using the mapping-pattern
 
 authors:
