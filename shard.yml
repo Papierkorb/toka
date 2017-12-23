@@ -5,6 +5,6 @@ description: A type-safe, object-oriented option parser using the mapping-patter
 authors:
   - Stefan Merettig <stefan-merettig@nuriaproject.org>
 
-crystal: 0.23.1
+crystal: 0.24.1
 
 license: MIT
