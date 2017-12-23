@@ -51,9 +51,21 @@ describe "Type test" do
       subject.foo.should eq true
       subject.bar.should eq false
     end
+
+    it "accepts --no-foo --bar" do
+      subject = BoolMapping.new(%w[ --no-foo --bar ])
+      subject.foo.should eq false
+      subject.bar.should eq true
+    end
   end
 
   describe "short name" do
+    it "requires -f" do
+      expect_raises(Toka::MissingOptionError) do
+        BoolMapping.new(%w[ -b ])
+      end
+    end
+
     it "accepts -f" do
       subject = BoolMapping.new(%w[ -f ])
       subject.foo.should eq true
@@ -75,6 +87,12 @@ describe "Type test" do
     it "accepts -F -B" do
       subject = BoolMapping.new(%w[ -F -B ])
       subject.foo.should eq false
+      subject.bar.should eq false
+    end
+
+    it "accepts -f -B" do
+      subject = BoolMapping.new(%w[ -f -B ])
+      subject.foo.should eq true
       subject.bar.should eq false
     end
   end
