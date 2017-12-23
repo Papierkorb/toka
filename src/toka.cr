@@ -427,6 +427,7 @@ module Toka
       config = { # Rewrite the configuration for internal use
         index: opt_index,
         long_names: long,
+        all_long_names: ([ ] of String + long), # Duplicate arrays
         short_names: short,
         all_short_names: ([ ] of String + (short || [ ] of String)),
         value_name: value_name,
@@ -474,10 +475,11 @@ module Toka
     # Add inversion switches for Bool options
     {% for _name, config in options %}
       {% if config[:type] == Bool %}
-        {% generated = config[:short_names].map(&.upcase).reject{|x| short_names.includes? x}
-          short_names = short_names + generated
-          config[:all_short_names] = config[:all_short_names] + generated
-          config[:long_names] = config[:long_names] + config[:long_names].map{|x| "no-#{x.id}"} %}
+        {% generated_short = config[:short_names].map(&.upcase).reject{|x| short_names.includes? x}
+          generated_long = config[:all_long_names].map{|x| "no-#{x.id}"}
+
+          config[:all_short_names] = config[:all_short_names] + generated_short
+          config[:all_long_names] = config[:all_long_names] + generated_long %}
       {% end %}
     {% end %}
 
@@ -501,7 +503,7 @@ module Toka
       {% for name, config in options %}
         ::Toka::Option.new(
           {{ name.stringify }},
-          {{ config[:long_names] }} of String,
+          {{ config[:all_long_names] }} of String,
           {{ config[:all_short_names].map(&.chars.first) }} of Char,
           {{ config[:value_name] }},
           {{ config[:description] }},
