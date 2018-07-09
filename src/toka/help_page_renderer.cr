@@ -67,7 +67,7 @@ module Toka
 
       io.print OPTION_INDENT
       if short
-        io.print "#{"-".colorize(:green).toggle(@colors)}#{short.colorize(:white).toggle(@colors)}"
+        io.print "#{"-".colorize(:green).toggle(@colors)}#{short.colorize.mode(:bright).toggle(@colors)}"
         io.print option.value_name if option.has_value? && !long
       else
         io.print "  "
@@ -81,11 +81,11 @@ module Toka
 
       if long
         base_size = long.size
-        long = long.colorize(:white).toggle(@colors).to_s
+        long = long.colorize.mode(:bright).toggle(@colors).to_s
 
         if option.has_value?
           base_size += 1 + option.value_name.size
-          long += "=#{option.value_name.colorize(:light_gray).toggle(@colors)}"
+          long += "=#{option.value_name.colorize.mode(:dim).toggle(@colors)}"
         end
 
         align_size = { (@align - base_size + 2), 2 }.max

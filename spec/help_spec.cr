@@ -68,6 +68,7 @@ Long options
   -o, --normal=VALUE          A normal one for once
 This is my footer
 
-EOF.gsub("|", "")
+EOF
+      .gsub("|", "")
   end
 end
