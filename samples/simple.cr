@@ -1,4 +1,4 @@
-require  "../src/toka"
+require "../src/toka"
 
 # Demonstrates a really simple option parser.
 # Run: `$ crystal samples/simple.cr -- --name=Foo --verbose`
@@ -6,11 +6,11 @@ require  "../src/toka"
 
 # Also try passing `--help`!
 
-class MyOptions # Create a container class
-  Toka.mapping({ # Don't forget the opening braces!
-    name: String, # Mandatory option "--name"
+class MyOptions         # Create a container class
+  Toka.mapping({        # Don't forget the opening braces!
+    name:      String,  # Mandatory option "--name"
     last_name: String?, # Optional option "--last-name"
-    verbose: Bool, # "--verbose" defaults to `false`
+    verbose:   Bool,    # "--verbose" defaults to `false`
   })
 end
 

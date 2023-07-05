@@ -1,4 +1,4 @@
-require  "../src/toka"
+require "../src/toka"
 
 # Demonstrates usage of an `Array(Int32)` target
 # Run: `$ crystal samples/sequential.cr -- -n5 -n6`
@@ -6,11 +6,11 @@ require  "../src/toka"
 
 # Also try passing `--help`!
 
-class MyOptions # Create a container class
+class MyOptions  # Create a container class
   Toka.mapping({ # Don't forget the opening braces!
     num: {
-      type: Array(Int32),
-      default: [ 1, 2, 3 ], # If none are passed, use these!
+      type:    Array(Int32),
+      default: [1, 2, 3], # If none are passed, use these!
       # If no default is given, it falls back to an empty array!
     },
   })

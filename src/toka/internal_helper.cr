@@ -1,5 +1,4 @@
 module Toka
-
   # This file contains internal helper methods and macros for `Toka.mapping`.
   # None of these are expected to be used outside of it!
 
@@ -15,7 +14,7 @@ module Toka
       index += 1
     end
 
-    { value, index }
+    {value, index}
   end
 
   # Internal helper.  Do not use.
@@ -40,7 +39,7 @@ module Toka
 
   # Internal helper.  Do not use.
   macro _convert_and_verify(raw, verifier, converter, name, strings, index, option)
-    %value = ::Toka._convert_value({{ raw }}, {{ converter }}, {{ name }}, { {{ [ strings, index, option ].splat }} })
+    %value = ::Toka._convert_value({{ raw }}, {{ converter }}, {{ name }}, { {{ [strings, index, option].splat }} })
 
     {% if verifier %}
       response = ({{ verifier }}).call(%value)

@@ -1,18 +1,18 @@
-require  "../src/toka"
+require "../src/toka"
 
 # Demonstrates how to build an user-friendly error output.
 # Run: `$ crystal samples/error_handling.cr
 
-class MyOptions # Create a container class
+class MyOptions  # Create a container class
   Toka.mapping({ # Don't forget the opening braces!
     name: {
-      type: String,
+      type:        String,
       description: "Whom to greet",
     },
     count: {
-      type: Int32,
+      type:        Int32,
       description: "Times to greet",
-      default: 1,
+      default:     1,
     },
   })
 end
@@ -37,14 +37,13 @@ end
 
 begin
   opts = MyOptions.new # It will use `ARGV` by default!
-  opts.count.times{ puts "Hello, #{opts.name}!" }
+  opts.count.times { puts "Hello, #{opts.name}!" }
 
   # Handle errors with some user-friendly-ish output
 rescue err : Toka::UnknownOptionError | Toka::ParseError
   print_error_pointer err.position if err.responds_to?(:position)
   puts "#{err.class}: #{err.message}"
   print_description(err.option) if err.responds_to?(:option)
-
 rescue err : Toka::MissingOptionError
   option = err.option # The error supplies us the errored option!
   puts "Missing required option #{option.name.inspect}"

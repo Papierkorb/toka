@@ -1,5 +1,5 @@
 require "colorize" # For HelpPageRenderer
-require "uri" # For the built-in converter
+require "uri"      # For the built-in converter
 require "./toka/*"
 
 module Toka
@@ -85,11 +85,11 @@ module Toka
   # here's an example:
   #
   # ```
-  # class MyOptions # Create a container class
-  #   Toka.mapping({ # Don't forget the opening braces!
-  #     name: String, # Mandatory option
+  # class MyOptions         # Create a container class
+  #   Toka.mapping({        # Don't forget the opening braces!
+  #     name:      String,  # Mandatory option
   #     last_name: String?, # Optional option
-  #     verbose: Bool, # Mandatory option
+  #     verbose:   Bool,    # Mandatory option
   #   })
   # end
   #
@@ -148,10 +148,10 @@ module Toka
   # class MyOptions
   #   Toka.mapping({ # Still don't forget the opening braces!
   #     name: {
-  #       type: String, # Still a String
-  #       default: "World", # But greet the World if none was given
+  #       type:        String,          # Still a String
+  #       default:     "World",         # But greet the World if none was given
   #       description: "Whom to greet", # For the help page
-  #       value_name: "NAME", # Same ^
+  #       value_name:  "NAME",          # Same ^
   #     },
   #     last_name: {
   #       type: String?,
@@ -189,17 +189,18 @@ module Toka
   # descriptive one itself.
   #
   # ```
-  # module IpV4Converter # Sample only!  Please do more error checking in your converters!
+  # Sample only!  Please do more error checking in your converters!
+  # module IpV4Converter
   #   def self.read(input : String) : Int32? # You can also just write `Int32`
-  #     input.split(".", 4).map(&.to_u32).reduce(0u32){|x, a| (a << 8) | x}
+  #     input.split(".", 4).map(&.to_u32).reduce(0u32) {|x, a| (a << 8) | x}
   #   end
   # end
   #
   # class MyOptions
   #   Toka.mapping({
-  #     addr: { # Reacts to `--addr`
-  #       type: UInt32, # The result will be a UInt32
-  #       converter: IpV4Converter # And we want to use this converter
+  #     addr: {                     # Reacts to `--addr`
+  #       type:      UInt32,        # The result will be a UInt32
+  #       converter: IpV4Converter, # And we want to use this converter
   #     },
   #   })
   # end
@@ -223,13 +224,13 @@ module Toka
   # class MyOptions
   #   Toka.mapping({
   #     name: {
-  #       type: String, #  vvvvvv Type is required for Crystal!
-  #       verifier: ->(x : String){ x == "Bob" } # Only accepts "Bob" as input
+  #       type:     String, #  vvvvvv Type is required for Crystal!
+  #       verifier: ->(x : String) { x == "Bob" }, # Only accepts "Bob" as input
   #     },
   #     age: {
-  #       type: Int32, # Simple age restriction with additional message:
-  #       verifier: ->(x : Int32){ x >= 18 || "Must be an adult" }
-  #     }
+  #       type:     Int32, # Simple age restriction with additional message:
+  #       verifier: ->(x : Int32) { x >= 18 || "Must be an adult" },
+  #     },
   #   })
   # end
   # ```
@@ -277,16 +278,16 @@ module Toka
   # ```
   # class MyOptions
   #   Toka.mapping({
-  #     name: Array(String), # Simple usage
-  #     ints: Array(Int32), # Works too
+  #     name:    Array(String), # Simple usage
+  #     ints:    Array(Int32),  # Works too
   #     streets: {
-  #       type: Array(String),
-  #       default: [ "Foo st", "Bar st" ], # Will only be used if none are given.
+  #       type:    Array(String),
+  #       default: ["Foo st", "Bar st"], # Will only be used if none are given.
   #     },
   #     birthday: {
-  #       type: Hash(String, Time), # Associative data
-  #       key_converter: TitelizeName, # Converter for the key
-  #       value_converter: TimeConverter, # Converter for the value
+  #       type:            Hash(String, Time), # Associative data
+  #       key_converter:   TitelizeName,       # Converter for the key
+  #       value_converter: TimeConverter,      # Converter for the value
   #       # converter: TimeConverter, # Alias, equivalent to the one above
   #     },
   #   })
@@ -336,118 +337,118 @@ module Toka
   #   long-name, and using any following characters afterwards.  Done until an unique one is found, or none at all.
   # * `Bool` type options get both a getter with question-mark and one without: `#verbose` is the same as `#verbose?`
   # * A `--help` page is generated.  Upon activation through the user, the process is exited!
-  macro mapping(options, info = { banner: nil, footer: nil, help: true, colors: true })
+  macro mapping(options, info = {banner: nil, footer: nil, help: true, colors: true})
     {% short_names = [] of String
-    opt_index = 0
-    short_names << 'h' if info[:help] != false
-    help_colors = info[:colors] != false %}
+       opt_index = 0
+       short_names << 'h' if info[:help] != false
+       help_colors = info[:colors] != false %}
 
     {% for k, v in options %}
       {% # Prepare the option configuration
-      v = v.is_a?(NamedTupleLiteral) ? v : { type: v }
-      type = v[:type] # Resolve wanted type
-      type = type.is_a?(Path) ? type.resolve : type
+       v = v.is_a?(NamedTupleLiteral) ? v : {type: v}
+       type = v[:type] # Resolve wanted type
+       type = type.is_a?(Path) ? type.resolve : type
 
-      # Read desired configuration or use default values
-      long = v[:long] || [ k.stringify.gsub(/_/, "-") ]
-      short = v[:short] == false ? false : (v[:short] || [ ] of String)
-      long = [ long ] if long.is_a? String
-      short = [ short ] if short.is_a? String
-      nilable = v[:nilable]
-      short_names = short_names + short unless short == false
-      value_name = v[:value_name] || "VALUE"
+       # Read desired configuration or use default values
+       long = v[:long] || [k.stringify.gsub(/_/, "-")]
+       short = v[:short] == false ? false : (v[:short] || [] of String)
+       long = [long] if long.is_a? String
+       short = [short] if short.is_a? String
+       nilable = v[:nilable]
+       short_names = short_names + short unless short == false
+       value_name = v[:value_name] || "VALUE"
 
-      key_type = nil
-      value_type = type
-      nonnil_type = type
-      has_default = v.keys.map(&.stringify).includes?("default")
-      default = v[:default]
+       key_type = nil
+       value_type = type
+       nonnil_type = type
+       has_default = v.keys.map(&.stringify).includes?("default")
+       default = v[:default]
 
-      if type.is_a?(Generic) && type.name.resolve == ::Union
-        types = type.type_vars.map{|x| x.is_a?(Path) ? x.resolve : x}
+       if type.is_a?(Generic) && type.name.resolve == ::Union
+         types = type.type_vars.map { |x| x.is_a?(Path) ? x.resolve : x }
 
-        if types.includes?(Nil)
-          nilable = true
-          nonnils = types.reject(&.==(Nil))
+         if types.includes?(Nil)
+           nilable = true
+           nonnils = types.reject(&.==(Nil))
 
-          if nonnils.size == 1
-            nonnil_type = nonnils.first
-          else
-            nonnil_type = Union.new(nonnils)
-          end
+           if nonnils.size == 1
+             nonnil_type = nonnils.first
+           else
+             nonnil_type = Union.new(nonnils)
+           end
 
-          value_type = nonnil_type
-        end
-      end
+           value_type = nonnil_type
+         end
+       end
 
-      # Handle Array(T) and Hash(K, V) type of arguments
-      if nonnil_type.is_a?(Generic)
-        if nonnil_type.name.resolve == ::Array
-          mode = :sequential
-          value_type = nonnil_type.type_vars.first
+       # Handle Array(T) and Hash(K, V) type of arguments
+       if nonnil_type.is_a?(Generic)
+         if nonnil_type.name.resolve == ::Array
+           mode = :sequential
+           value_type = nonnil_type.type_vars.first
 
-          # It's about to get worse!
-          value_type = value_type.is_a?(Path) ? value_type.resolve : value_type
-          value_types = value_type.is_a?(Generic) ? value_type.type_vars.map{|x| x.is_a?(Path) ? x.resolve : x} : [ value_type ]
-          value_type = value_types.includes?(Nil) ? value_types.reject(&.==(Nil)).first : value_types.first
-        elsif nonnil_type.name.resolve == ::Hash
-          mode = :associative
-          key_type = nonnil_type.type_vars.first
-          value_type = nonnil_type.type_vars.last
+           # It's about to get worse!
+           value_type = value_type.is_a?(Path) ? value_type.resolve : value_type
+           value_types = value_type.is_a?(Generic) ? value_type.type_vars.map { |x| x.is_a?(Path) ? x.resolve : x } : [value_type]
+           value_type = value_types.includes?(Nil) ? value_types.reject(&.==(Nil)).first : value_types.first
+         elsif nonnil_type.name.resolve == ::Hash
+           mode = :associative
+           key_type = nonnil_type.type_vars.first
+           value_type = nonnil_type.type_vars.last
 
-          # Now, twice as bad
-          value_type = value_type.is_a?(Path) ? value_type.resolve : value_type
-          value_types = value_type.is_a?(Generic) ? value_type.type_vars.map{|x| x.is_a?(Path) ? x.resolve : x} : [ value_type ]
-          value_type = value_types.includes?(Nil) ? value_types.reject(&.==(Nil)).first : value_types.first
+           # Now, twice as bad
+           value_type = value_type.is_a?(Path) ? value_type.resolve : value_type
+           value_types = value_type.is_a?(Generic) ? value_type.type_vars.map { |x| x.is_a?(Path) ? x.resolve : x } : [value_type]
+           value_type = value_types.includes?(Nil) ? value_types.reject(&.==(Nil)).first : value_types.first
 
-          key_type = key_type.is_a?(Path) ? key_type.resolve : key_type
-          key_types = key_type.is_a?(Generic) ? key_type.type_vars.map{|x| x.is_a?(Path) ? x.resolve : x} : [ key_type ]
-          key_type = key_types.includes?(Nil) ? key_types.reject(&.==(Nil)).first : key_types.first
-        elsif nonnil_type.name.resolve == ::Union
-          # Do nothing, we already resolved this one above.
-        else
-          type.raise("Only Array or Hash are allowed as generic types")
-        end
-      else
-        mode = :single
-      end
+           key_type = key_type.is_a?(Path) ? key_type.resolve : key_type
+           key_types = key_type.is_a?(Generic) ? key_type.type_vars.map { |x| x.is_a?(Path) ? x.resolve : x } : [key_type]
+           key_type = key_types.includes?(Nil) ? key_types.reject(&.==(Nil)).first : key_types.first
+         elsif nonnil_type.name.resolve == ::Union
+           # Do nothing, we already resolved this one above.
+         else
+           type.raise("Only Array or Hash are allowed as generic types")
+         end
+       else
+         mode = :single
+       end
 
-      # Use the user defined converter, or use the default one.
-      value_converter = v[:converter] || v[:value_converter] || "::Toka::Converter::#{value_type}"
-      key_converter = v[:key_converter] || "::Toka::Converter::#{key_type}"
+       # Use the user defined converter, or use the default one.
+       value_converter = v[:converter] || v[:value_converter] || "::Toka::Converter::#{value_type}"
+       key_converter = v[:key_converter] || "::Toka::Converter::#{key_type}"
 
-      if value_type.is_a?(Generic) && !(v[:converter] || v[:value_converter])
-        value_type.raise "Unions and Generics require a custom value_converter"
-      end
+       if value_type.is_a?(Generic) && !(v[:converter] || v[:value_converter])
+         value_type.raise "Unions and Generics require a custom value_converter"
+       end
 
-      if key_type && key_type.is_a?(Generic) && !v[:key_converter]
-        key_type.raise "Unions and Generics require a custom key_converter"
-      end
+       if key_type && key_type.is_a?(Generic) && !v[:key_converter]
+         key_type.raise "Unions and Generics require a custom key_converter"
+       end
 
-      config = { # Rewrite the configuration for internal use
-        index: opt_index,
-        long_names: long,
-        all_long_names: ([ ] of String + long), # Duplicate arrays
-        short_names: short,
-        all_short_names: ([ ] of String + (short || [ ] of String)),
-        value_name: value_name,
-        description: v[:description],
-        category: v[:category],
-        type: nonnil_type, #type,
-        mode: mode,
-        value_type: value_type,
-        key_type: key_type,
-        nilable: nilable,
-        has_default: has_default,
-        default: default,
-        key_converter: key_converter,
-        value_converter: value_converter,
-        key_verifier: v[:key_verifier],
-        value_verifier: v[:verifier] || v[:value_verifier],
-      }
+       config = { # Rewrite the configuration for internal use
+         index:           opt_index,
+         long_names:      long,
+         all_long_names:  ([] of String + long), # Duplicate arrays
+         short_names:     short,
+         all_short_names: ([] of String + (short || [] of String)),
+         value_name:      value_name,
+         description:     v[:description],
+         category:        v[:category],
+         type:            nonnil_type, # type,
+         mode:            mode,
+         value_type:      value_type,
+         key_type:        key_type,
+         nilable:         nilable,
+         has_default:     has_default,
+         default:         default,
+         key_converter:   key_converter,
+         value_converter: value_converter,
+         key_verifier:    v[:key_verifier],
+         value_verifier:  v[:verifier] || v[:value_verifier],
+       }
 
-      opt_index = opt_index + 1
-      options[k] = config %}
+       opt_index = opt_index + 1
+       options[k] = config %}
     {% end %}
 
     # Automatically choose unique short-names.
@@ -463,23 +464,23 @@ module Toka
           {% candidates = candidates + name.gsub(/-/, "").split("") %}
         {% end %}
 
-        {% found_candidates = candidates.reject{|x| short_names.includes? x}
-        unless found_candidates.empty?
-          short_names << found_candidates.first
-          config[:short_names] = [ found_candidates.first ]
-          config[:all_short_names] = [ found_candidates.first ]
-        end %}
+        {% found_candidates = candidates.reject { |x| short_names.includes? x }
+           unless found_candidates.empty?
+             short_names << found_candidates.first
+             config[:short_names] = [found_candidates.first]
+             config[:all_short_names] = [found_candidates.first]
+           end %}
       {% end %}
     {% end %}
 
     # Add inversion switches for Bool options
     {% for _name, config in options %}
       {% if config[:type] == Bool %}
-        {% generated_short = config[:short_names].map(&.upcase).reject{|x| short_names.includes? x}
-          generated_long = config[:all_long_names].map{|x| "no-#{x.id}"}
+        {% generated_short = config[:short_names].map(&.upcase).reject{|x| short_names.includes? x }
+           generated_long = config[:all_long_names].map{|x| "no-#{x.id}" }
 
-          config[:all_short_names] = config[:all_short_names] + generated_short
-          config[:all_long_names] = config[:all_long_names] + generated_long %}
+           config[:all_short_names] = config[:all_short_names] + generated_short
+           config[:all_long_names] = config[:all_long_names] + generated_long %}
       {% end %}
     {% end %}
 
@@ -531,9 +532,8 @@ module Toka
     # Work-around compiler bug
     {% for name, config in options %}
       {% config[:short_names] = nil if config[:short_names].empty?
-        config[:all_short_names] = nil if config[:all_short_names].empty?
-        config[:long_names] = nil if config[:long_names].empty?
-      %}
+         config[:all_short_names] = nil if config[:all_short_names].empty?
+         config[:long_names] = nil if config[:long_names].empty? %}
     {% end %}
 
     def initialize(strings : Indexable(String) = ARGV)
