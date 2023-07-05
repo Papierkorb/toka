@@ -486,6 +486,11 @@ module Toka
 
     # Generate option getters
     {% for name, config in options %}
+      {% if config[:nilable] %}
+        @{{ name.stringify.id }} : {{ config[:type] }} | Nil
+      {% else %}
+        @{{ name.stringify.id }} : {{ config[:type] }}
+      {% end %}
       # Getter for `{{ name.id }}`.
       # This option can be accessed through the long-option {{ config[:long_names].map{|x| "`--#{x.id}`"}.join(", ").id }}
       # or the short-option {{ config[:all_short_names].map{|x| "`-#{x.id}`"}.join(", ").id }}
