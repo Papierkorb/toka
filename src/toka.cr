@@ -553,9 +553,9 @@ module Toka
     def initialize(strings : Indexable(String) = ARGV)
       {% for name, config in options %}
         {% if config[:mode] != :single %}
-          %var_{name} = {{ config[:type].id }}.new
+          %var_{name}_var = {{ config[:type].id }}.new
         {% else %}
-          %var_{name} = nil.as({{ config[:type].id }} | Nil)
+          %var_{name}_var = nil.as({{ config[:type].id }} | Nil)
         {% end %}
       {% end %}
 
@@ -579,10 +579,10 @@ module Toka
           {% for name, config in options %}
             {% for opt in (config[:long_names] || [] of String) %}
             when {{ "--#{opt.id}" }}
-              ::Toka._read_value(%var_{name}, {{ name }}, {{ config }}, "t")
+              ::Toka._read_value(%var_{name}_var, "_{{ name.id }}_", {{ config }}, "t")
               {% if config[:value_type] == Bool %}
                 when {{ "--no-#{opt.id}" }}
-                  ::Toka._read_value(%var_{name}, {{ name }}, {{ config }}, "f")
+                  ::Toka._read_value(%var_{name}_var, "_{{ name.id }}_", {{ config }}, "f")
               {% end %}
             {% end %}
           {% end %}
@@ -634,19 +634,19 @@ module Toka
       {% for name, config in options %}
         {% if config[:has_default] %}
           {% if config[:mode] == :single %}
-            @{{ name.id }} = %var_{name}.nil? ? {{ config[:default] }} : %var_{name}
+            @{{ name.id }} = %var_{name}_var.nil? ? {{ config[:default] }} : %var_{name}_var
           {% else %}
-            @{{ name.id }} = %var_{name}.empty? ? {{ config[:default] }} : %var_{name}
+            @{{ name.id }} = %var_{name}_var.empty? ? {{ config[:default] }} : %var_{name}_var
           {% end %}
         {% elsif config[:nilable] %}
-          @{{ name.id }} = %var_{name}
+          @{{ name.id }} = %var_{name}_var
         {% else %}
-          if %var_{name}.nil?
+          if %var_{name}_var.nil?
             option = @@toka_options.options[{{ config[:index] }}]
             raise ::Toka::MissingOptionError.new("Missing option #{{{ name.stringify }}.inspect}", strings, option)
           end
 
-          @{{ name.id }} = %var_{name}
+          @{{ name.id }} = %var_{name}_var
         {% end %}
       {% end %}
     end

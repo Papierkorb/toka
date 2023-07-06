@@ -59,10 +59,10 @@ module Toka
 
     {% if config[:mode] == :single %}
       ::Toka._maybe_fetch_value({{ name }}, {{ config[:value_type] }}, {{ bool_default }})
-      {{ target }} = ::Toka._convert_and_verify(value, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "{{ name }}", strings, index, option)
+      {{ target }} = ::Toka._convert_and_verify(value, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "_{{ name.id }}_", strings, index, option)
     {% elsif config[:mode] == :sequential %}
       ::Toka._maybe_fetch_value({{ name }}, {{ config[:value_type] }}, {{ bool_default }})
-      {{ target }} << ::Toka._convert_and_verify(value, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "{{ name }}", strings, index, option)
+      {{ target }} << ::Toka._convert_and_verify(value, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "_{{ name.id }}_", strings, index, option)
     {% elsif config[:mode] == :associative %}
       value, index = ::Toka._fetch_value({{ name.stringify }}, option, value, strings, index)
 
@@ -71,9 +71,9 @@ module Toka
       end
 
       key, val = value.split('=', 2)
-      %key_{name} = ::Toka._convert_and_verify(key, {{ config[:key_verifier] }}, {{ config[:key_converter].id }}, "{{ name }}", strings, index, option)
-      %val_{name} = ::Toka._convert_and_verify(val, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "{{ name }}", strings, index, option)
-      {{ target }}[%key_{name}] = %val_{name}
+      %key_{name}_var = ::Toka._convert_and_verify(key, {{ config[:key_verifier] }}, {{ config[:key_converter].id }}, "_{{ name.id }}_", strings, index, option)
+      %val_{name}_var = ::Toka._convert_and_verify(val, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "_{{ name.id }}_", strings, index, option)
+      {{ target }}[%key_{name}_var] = %val_{name}_var
     {% end %}
   end
 end
