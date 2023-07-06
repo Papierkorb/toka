@@ -6,6 +6,8 @@ private class ParserTest
     bar:     Bool?,
     string:  String?,
     another: String?,
+    lib:     Bool?,
+    def:     Bool?,
   })
 end
 
@@ -165,6 +167,12 @@ describe "parser behaviour" do
     it "works in short-names with value in next word" do
       subject = ParserTest.new(%w[-s foo=bar])
       subject.string.should eq "foo=bar"
+    end
+
+    it "accepts reserved words" do
+      subject = ParserTest.new(%w[--lib --no-def])
+      subject.lib.should eq true
+      subject.def.should eq false
     end
   end
 end
