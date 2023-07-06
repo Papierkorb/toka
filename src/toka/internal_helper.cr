@@ -67,7 +67,9 @@ module Toka
       value, index = ::Toka._fetch_value({{ name.stringify }}, option, value, strings, index)
 
       unless value.includes?('=')
-        raise ::Toka::HashValueMissingError.new("Missing value in pair for option {{ name }}", strings, index, option)
+        raise ::Toka::HashValueMissingError.new(<<-MSG, strings, index, option)
+          Missing value in pair for option "{{ name }}"
+        MSG
       end
 
       key, val = value.split('=', 2)
