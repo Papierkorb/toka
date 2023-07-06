@@ -595,30 +595,30 @@ module Toka
             value = nil
 
             case current[inner]
-            {% if info[:help] != false %}
+              {% if info[:help] != false %}
               when 'h'
                 puts ::Toka::HelpPageRenderer.new(self.class, {{ help_colors }})
                 exit
-            {% end %}
+              {% end %}
             {% for name, config in options %}
               {% for opt in (config[:short_names] || [] of Char) %}
               when '{{ opt.id }}'
                 {% if config[:value_type] == Bool %}
-                  ::Toka._read_value(%var_{name}, {{ name }}, {{ config }}, "t")
+                  ::Toka._read_value(%var_{name}_var, "_{{ name.id }}_", {{ config }}, "t")
                   {% if (config[:all_short_names] || [] of Char).includes?(opt.upcase) %}
                     when '{{ opt.upcase.id }}'
-                      ::Toka._read_value(%var_{name}, {{ name }}, {{ config }}, "f")
+                      ::Toka._read_value(%var_{name}_var, "_{{ name.id }}_", {{ config }}, "f")
                   {% end %}
                 {% else %}
                   value = current[(inner + 1)..-1] if inner + 1 < current.size
-                  ::Toka._read_value(%var_{name}, {{ name }}, {{ config }}, "BUG")
+                  ::Toka._read_value(%var_{name}_var, "_{{ name.id }}_", {{ config }}, "BUG")
                   break
                 {% end %}
               {% end %}
             {% end %}
-            else
-              raise ::Toka::UnknownOptionError.new("Unknown option #{current[inner].inspect} in #{current.inspect}", strings, index, current[inner].to_s)
-            end
+              else
+                raise ::Toka::UnknownOptionError.new("Unknown option #{current[inner].inspect} in #{current.inspect}", strings, index, current[inner].to_s)
+              end
 
             inner += 1
           end
