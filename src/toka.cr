@@ -492,13 +492,22 @@ module Toka
         @{{ name.stringify.id }} : {{ config[:type] }}
       {% end %}
       # Getter for `{{ name.id }}`.
-      # This option can be accessed through the long-option {{ config[:long_names].map{|x| "`--#{x.id}`"}.join(", ").id }}
-      # or the short-option {{ config[:all_short_names].map{|x| "`-#{x.id}`"}.join(", ").id }}
-      getter {{ name.id }} : {{ config[:type] }}{% if config[:nilable] %} | Nil {% end %}
-
+      # This option can be accessed through the long-option {{ config[:long_names].map { |x| "`--#{x.id}`" }.join(", ").id }}
+      # or the short-option {{ config[:all_short_names].map { |x| "`-#{x.id}`" }.join(", ").id }}
+      {% if config[:nilable] %}
+        def {{name.stringify.id}} : {{config[:type]}} | Nil
+          @{{name.stringify.id}}
+        end
+      {% else %}
+        def {{name.stringify.id}} : {{config[:type]}}
+          @{{name.stringify.id}}
+        end
+      {% end %}
       {% if config[:type] == Bool %}
-        # Getter for `{{ name.id }}`.  See `#{{ name.id }}` for full documentation.
-        getter? {{ name.id }}
+        # Getter for `{{ name.stringify.id }}`.  See `#{{ name.stringify.id }}` for full documentation.
+        def {{name.stringify.id}}? : Bool
+          !!@{{name.stringify.id}}
+        end
       {% end %}
     {% end %}
 
