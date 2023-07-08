@@ -3,32 +3,32 @@ require "./spec_helper"
 private class HelpMapping
   Toka.mapping({
     name: {
-      type: String,
-      value_name: "NAME",
-      description: "This is a long\nmultiline description!"
+      type:        String,
+      value_name:  "NAME",
+      description: "This is a long\nmultiline description!",
     },
     long_option_name: {
-      type: String,
-      value_name: "LONG_TOO",
+      type:        String,
+      value_name:  "LONG_TOO",
       description: "This options name is quite long indeed\nAnd the description is even worse",
-      category: "Long options"
+      category:    "Long options",
     },
     normal: {
-      type: String,
+      type:        String,
       description: "A normal one for once",
-      category: "Long options"
+      category:    "Long options",
     },
-    toggle: Bool,
+    toggle:  Bool,
     aliased: {
-      type: String,
-      long: [ "one", "two" ],
-      short: [ "1", "2" ],
+      type:        String,
+      long:        ["one", "two"],
+      short:       ["1", "2"],
       description: "I have a few custom aliases",
     },
   }, {
     banner: "This is my banner",
     footer: "This is my footer",
-    help: true,
+    help:   true,
     colors: false,
   })
 end
@@ -39,12 +39,12 @@ describe "--help feature" do
       "This is my banner",
       "This is my footer",
       [
-        Toka::Option.new("name", [ "name" ], [ 'n' ], "NAME", "This is a long\nmultiline description!", nil, true),
-        Toka::Option.new("long_option_name", [ "long-option-name" ], [ 'l' ], "LONG_TOO", "This options name is quite long indeed\nAnd the description is even worse", "Long options", true),
-        Toka::Option.new("normal", [ "normal" ], [ 'o' ], "VALUE", "A normal one for once", "Long options", true),
-        Toka::Option.new("toggle", [ "toggle", "no-toggle" ], [ 't', 'T' ], "VALUE", nil, nil, false),
-        Toka::Option.new("aliased", [ "one", "two" ], [ '1', '2' ], "VALUE", "I have a few custom aliases", nil, true),
-        Toka::Option.new("help", [ "help" ], [ 'h' ], "", "Shows this help", nil, false),
+        Toka::Option.new("name", ["name"], ['n'], "NAME", "This is a long\nmultiline description!", nil, true),
+        Toka::Option.new("long_option_name", ["long-option-name"], ['l'], "LONG_TOO", "This options name is quite long indeed\nAnd the description is even worse", "Long options", true),
+        Toka::Option.new("normal", ["normal"], ['o'], "VALUE", "A normal one for once", "Long options", true),
+        Toka::Option.new("toggle", ["toggle", "no-toggle"], ['t', 'T'], "VALUE", nil, nil, false),
+        Toka::Option.new("aliased", ["one", "two"], ['1', '2'], "VALUE", "I have a few custom aliases", nil, true),
+        Toka::Option.new("help", ["help"], ['h'], "", "Shows this help", nil, false),
       ]
     )
   end

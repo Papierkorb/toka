@@ -20,57 +20,57 @@ end
 private class TestConverterMapping
   Toka.mapping({
     foo: {
-      type: Int32,
+      type:      Int32,
       converter: MyConverter,
     },
     bar: {
-      type: String, # :value_converter == :converter !
+      type:            String, # :value_converter == :converter !
       value_converter: MyStringConverter,
     },
     nilable_bar: {
-      type: String?,
+      type:      String?,
       converter: MyStringConverter,
     },
     map: { # Test converter on a Hash
-      type: Hash(String, Int32),
-      key_converter: MyStringConverter,
+      type:            Hash(String, Int32),
+      key_converter:   MyStringConverter,
       value_converter: MyConverter,
     },
     list: { # List test
-      type: Array(Int32),
-      converter: MyConverter
-    }
+      type:      Array(Int32),
+      converter: MyConverter,
+    },
   })
 end
 
 private class BuiltinMapping
   Toka.mapping({
-    u8: UInt8,
-    u16: UInt16,
-    u32: UInt32,
-    u64: UInt64,
-    i8: Int8,
-    i16: Int16,
-    i32: Int32,
-    i64: Int64,
-    f32: Float32,
-    f64: Float64,
+    u8:     UInt8,
+    u16:    UInt16,
+    u32:    UInt32,
+    u64:    UInt64,
+    i8:     Int8,
+    i16:    Int16,
+    i32:    Int32,
+    i64:    Int64,
+    f32:    Float32,
+    f64:    Float64,
     string: String,
-    bool: Bool,
-    uri: URI,
+    bool:   Bool,
+    uri:    URI,
   })
 end
 
 describe "converter behaviour" do
   it "calls the converters" do
-    subject = TestConverterMapping.new(%w[ --foo=4 --bar=foo ])
+    subject = TestConverterMapping.new(%w[--foo=4 --bar=foo])
     subject.foo.should eq 8
     subject.bar.should eq "foo"
   end
 
   describe "built-in converters" do
     it "works" do
-      subject = BuiltinMapping.new(%w[ --u8=1 --u16=2 --u32=3 --u64=4 --i8=5 --i16=6 --i32=7 --i64=8 --f32=9 --f64=10 --string=Hello --bool --uri=http://github.com/Papierkorb/ ])
+      subject = BuiltinMapping.new(%w[--u8=1 --u16=2 --u32=3 --u64=4 --i8=5 --i16=6 --i32=7 --i64=8 --f32=9 --f64=10 --string=Hello --bool --uri=http://github.com/Papierkorb/])
       subject.u8.should eq 1u8
       subject.u16.should eq 2u16
       subject.u32.should eq 3u32
@@ -90,31 +90,31 @@ describe "converter behaviour" do
   describe "error handling" do
     it "raises for an error in value_converter" do
       expect_raises(Toka::ConversionError) do
-        TestConverterMapping.new(%w[ --foo=4 --bar=fail ])
+        TestConverterMapping.new(%w[--foo=4 --bar=fail])
       end
     end
 
     it "raises for an error in value_converter on nilable field" do
       expect_raises(Toka::ConversionError) do
-        TestConverterMapping.new(%w[ --foo=4 --bar=foo --nilable-bar=fail ])
+        TestConverterMapping.new(%w[--foo=4 --bar=foo --nilable-bar=fail])
       end
     end
 
     it "raises for an error in value_converter on sequential field" do
       expect_raises(Toka::ConversionError) do
-        TestConverterMapping.new(%w[ --foo=4 --bar=foo --list=10000 ])
+        TestConverterMapping.new(%w[--foo=4 --bar=foo --list=10000])
       end
     end
 
     it "raises for an error in value_converter on associative field" do
       expect_raises(Toka::ConversionError) do
-        TestConverterMapping.new(%w[ --foo=4 --bar=foo --map yadda=10000 ])
+        TestConverterMapping.new(%w[--foo=4 --bar=foo --map yadda=10000])
       end
     end
 
     it "raises for an error in key_converter on associative field" do
       expect_raises(Toka::ConversionError) do
-        TestConverterMapping.new(%w[ --foo=4 --bar=foo --map fail=4 ])
+        TestConverterMapping.new(%w[--foo=4 --bar=foo --map fail=4])
       end
     end
   end

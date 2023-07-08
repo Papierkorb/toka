@@ -1,4 +1,4 @@
-require  "../src/toka"
+require "../src/toka"
 
 # Demonstrates the use of a verifier.
 # Run: `$ crystal samples/verification.cr -- --name=Bob --age=15`
@@ -7,13 +7,13 @@ require  "../src/toka"
 class MyOptions
   Toka.mapping({
     name: {
-      type: String,
-      verifier: ->(x : String){ x == "Bob" } # Only accepts "Bob" as input
+      type:     String,
+      verifier: ->(x : String) { x == "Bob" }, # Only accepts "Bob" as input
     },
     age: {
-      type: Int32, # Simple age restriction with additional message:
-      verifier: ->(x : Int32){ x >= 18 || "Must be an adult" }
-    }
+      type:     Int32, # Simple age restriction with additional message:
+      verifier: ->(x : Int32) { x >= 18 || "Must be an adult" },
+    },
   })
 end
 

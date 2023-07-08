@@ -17,8 +17,8 @@ module Toka
   # ```
   class HelpPageRenderer
     OPTION_INDENT = "  "
-    BASE_INDENT =  OPTION_INDENT.size + 4 + 2
-    MAX_ALIGN = 20
+    BASE_INDENT   = OPTION_INDENT.size + 4 + 2
+    MAX_ALIGN     = 20
 
     @descr : OptionDescriptor
     @align : Int32
@@ -32,7 +32,7 @@ module Toka
         name_len + opt.value_name.size + 1
       end
 
-      @align = { MAX_ALIGN, longest }.min
+      @align = {MAX_ALIGN, longest}.min
     end
 
     def to_s(io)
@@ -88,7 +88,7 @@ module Toka
           long += "=#{option.value_name.colorize.mode(:dim).toggle(@colors)}"
         end
 
-        align_size = { (@align - base_size + 2), 2 }.max
+        align_size = {(@align - base_size + 2), 2}.max
         indent_size += base_size + align_size
         align = " " * align_size
         io.print "#{"--".colorize(:green).toggle(@colors)}#{long}#{align}"

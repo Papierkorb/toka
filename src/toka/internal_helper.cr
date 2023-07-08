@@ -1,5 +1,4 @@
 module Toka
-
   # This file contains internal helper methods and macros for `Toka.mapping`.
   # None of these are expected to be used outside of it!
 
@@ -15,7 +14,7 @@ module Toka
       index += 1
     end
 
-    { value, index }
+    {value, index}
   end
 
   # Internal helper.  Do not use.
@@ -40,7 +39,7 @@ module Toka
 
   # Internal helper.  Do not use.
   macro _convert_and_verify(raw, verifier, converter, name, strings, index, option)
-    %value = ::Toka._convert_value({{ raw }}, {{ converter }}, {{ name }}, { {{ [ strings, index, option ].splat }} })
+    %value = ::Toka._convert_value({{ raw }}, {{ converter }}, {{ name }}, { {{ [strings, index, option].splat }} })
 
     {% if verifier %}
       response = ({{ verifier }}).call(%value)
@@ -60,21 +59,23 @@ module Toka
 
     {% if config[:mode] == :single %}
       ::Toka._maybe_fetch_value({{ name }}, {{ config[:value_type] }}, {{ bool_default }})
-      {{ target }} = ::Toka._convert_and_verify(value, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "{{ name }}", strings, index, option)
+      {{ target }} = ::Toka._convert_and_verify(value, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "_{{ name.id }}_", strings, index, option)
     {% elsif config[:mode] == :sequential %}
       ::Toka._maybe_fetch_value({{ name }}, {{ config[:value_type] }}, {{ bool_default }})
-      {{ target }} << ::Toka._convert_and_verify(value, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "{{ name }}", strings, index, option)
+      {{ target }} << ::Toka._convert_and_verify(value, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "_{{ name.id }}_", strings, index, option)
     {% elsif config[:mode] == :associative %}
       value, index = ::Toka._fetch_value({{ name.stringify }}, option, value, strings, index)
 
       unless value.includes?('=')
-        raise ::Toka::HashValueMissingError.new("Missing value in pair for option {{ name }}", strings, index, option)
+        raise ::Toka::HashValueMissingError.new(<<-MSG, strings, index, option)
+          Missing value in pair for option "{{ name }}"
+        MSG
       end
 
       key, val = value.split('=', 2)
-      %key_{name} = ::Toka._convert_and_verify(key, {{ config[:key_verifier] }}, {{ config[:key_converter].id }}, "{{ name }}", strings, index, option)
-      %val_{name} = ::Toka._convert_and_verify(val, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "{{ name }}", strings, index, option)
-      {{ target }}[%key_{name}] = %val_{name}
+      %key_{name}_var = ::Toka._convert_and_verify(key, {{ config[:key_verifier] }}, {{ config[:key_converter].id }}, "_{{ name.id }}_", strings, index, option)
+      %val_{name}_var = ::Toka._convert_and_verify(val, {{ config[:value_verifier] }}, {{ config[:value_converter].id }}, "_{{ name.id }}_", strings, index, option)
+      {{ target }}[%key_{name}_var] = %val_{name}_var
     {% end %}
   end
 end
